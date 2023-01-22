@@ -1,23 +1,45 @@
-import logo from './logo.svg';
 import './App.css';
+import Header from './components/Header';
+import Card from './components/Card';
+import { useState, useEffect } from "react";
+
+
+
 
 function App() {
+
+  const [topMovie, setTopMovie] = useState([]);
+
+  const GetTopMovie = async () => {
+
+  const temp = fetch('https://kinopoiskapiunofficial.tech/api/v2.2/films/top', {
+    method: 'GET',
+    headers: {
+        'X-API-KEY': '18a36a7c-6691-4f21-addd-634100eb3a88',
+        'Content-Type': 'application/json',
+    },
+})
+.then(res => res.json())
+.then(json => console.log(json))
+.catch(err => console.log(err))
+setTopMovie(temp.data.data.slice(0, 10));
+};
+
+useEffect(()=>{
+  GetTopMovie();
+},[]);
+
+console.log(topMovie);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header/> 
+      {(topMovie.films || []).map((movie)=>(
+        <Card
+        title = {movie.nameRu}
+        
+        />
+      ))}
+      <Card/>
     </div>
   );
 }
